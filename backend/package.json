@@ -1,20 +1,23 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "VOTR Backend API",
+  "main": "api/index.ts",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/index.js",
+    "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "vercel-build": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "@types/express-session": "^1.18.2",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
@@ -25,17 +28,16 @@
     "express-session": "^1.18.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "prisma": "^5.22.0",
     "qrcode": "^1.5.4",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@prisma/client": "^5.22.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
     "@types/uuid": "^10.0.0",
     "nodemon": "^3.1.11",
-    "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }

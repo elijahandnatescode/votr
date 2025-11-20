@@ -50,6 +50,12 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'VOTR API is running' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// Export for Vercel serverless
+export default app;
+
+// Only listen in development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+}
