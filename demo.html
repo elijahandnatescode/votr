@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOTR - Ranked Voting Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(180deg, #0a1a2e 0%, #000814 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    .parallax-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 149, 255, 0.25) 0%, rgba(0, 102, 255, 0.12) 30%, transparent 60%);
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .bg-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(0, 149, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 149, 255, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.6;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 75rem;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .eyebrow {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #00d4ff;
+      margin-bottom: 2rem;
+    }
+
+    .title {
+      font-size: clamp(6rem, 22vw, 18rem);
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      line-height: 0.85;
+      margin-bottom: 2.5rem;
+      color: #fff;
+      text-shadow: 0 0 150px rgba(0, 212, 255, 0.6), 0 0 80px rgba(0, 149, 255, 0.4);
+    }
+
+    .subtitle {
+      font-size: clamp(1.4rem, 4vw, 2.5rem);
+      font-weight: 400;
+      color: #e8e8e8;
+      max-width: 60rem;
+      margin: 0 auto 3.5rem;
+      line-height: 1.5;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn {
+      padding: 1.75rem 4.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00d4ff, #0095ff);
+      color: #0a1a2e;
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+    }
+
+    .primary-btn:hover {
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 20px 60px rgba(0, 212, 255, 0.6);
+    }
+
+    .secondary-btn {
+      padding: 1.75rem 4.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: transparent;
+      color: #00d4ff;
+      border: 3px solid #00d4ff;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(0, 212, 255, 0.15);
+      transform: scale(1.08) translateY(-3px);
+    }
+
+    /* Sections */
+    .section {
+      padding: 10rem 2rem;
+      background: #000814;
+    }
+
+    .section-eyebrow {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #00d4ff;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6rem;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 3rem;
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, #0d2440 0%, #000814 100%);
+      padding: 4rem 3rem;
+      border: 2px solid rgba(0, 212, 255, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(0, 212, 255, 0.7);
+      transform: translateY(-12px);
+      box-shadow: 0 30px 80px rgba(0, 149, 255, 0.25);
+    }
+
+    .feature-number {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #00d4ff;
+      margin-bottom: 2rem;
+      letter-spacing: 0.2em;
+    }
+
+    .feature-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    .feature-text {
+      font-size: 1.2rem;
+      color: #d0d0d0;
+      line-height: 1.7;
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+      padding: 10rem 2rem;
+      background: linear-gradient(180deg, #000814 0%, #0a1a2e 100%);
+    }
+
+    .benefits-list {
+      max-width: 65rem;
+      margin: 0 auto;
+      display: grid;
+      gap: 2.5rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      gap: 2.5rem;
+      align-items: flex-start;
+      padding: 2.5rem;
+      background: rgba(0, 212, 255, 0.06);
+      border: 2px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .benefit-item:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: rgba(0, 212, 255, 0.4);
+    }
+
+    .benefit-icon {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+    }
+
+    .benefit-content {
+      flex: 1;
+    }
+
+    .benefit-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #00d4ff;
+      margin-bottom: 1rem;
+    }
+
+    .benefit-text {
+      font-size: 1.15rem;
+      color: #d0d0d0;
+      line-height: 1.65;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 12rem 2rem;
+      text-align: center;
+      background: linear-gradient(180deg, #0a1a2e 0%, #001d3d 100%);
+    }
+
+    .cta-title {
+      font-size: clamp(4.5rem, 14vw, 10rem);
+      font-weight: 800;
+      margin-bottom: 2.5rem;
+      color: #fff;
+      letter-spacing: -0.03em;
+      text-shadow: 0 0 80px rgba(0, 212, 255, 0.4);
+    }
+
+    .cta-text {
+      font-size: 2rem;
+      color: #d0d0d0;
+      margin-bottom: 4rem;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 3.5rem 2rem;
+      border-top: 2px solid rgba(0, 212, 255, 0.25);
+      text-align: center;
+      color: #6b7280;
+      font-size: 1rem;
+      background: #000814;
+    }
+
+    /* Navigation for demo */
+    .demo-nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      display: flex;
+      gap: 10px;
+    }
+
+    .demo-nav button {
+      padding: 0.75rem 1.5rem;
+      background: rgba(0, 212, 255, 0.2);
+      border: 1px solid #00d4ff;
+      color: #00d4ff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.3s;
+    }
+
+    .demo-nav button:hover {
+      background: rgba(0, 212, 255, 0.3);
+    }
+
+    .demo-nav button.active {
+      background: #00d4ff;
+      color: #000814;
+    }
+
+    /* Page views */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* Admin Page Styles */
+    .admin-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #000814 0%, #001d3d 50%, #000814 100%);
+      padding: 2rem;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .admin-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #00d4ff, #ff006e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 2rem;
+    }
+
+    .admin-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      color: #00d4ff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-title.pink {
+      color: #ff006e;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #9ca3af;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.875rem;
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.875rem;
+      min-height: 5rem;
+      resize: vertical;
+    }
+
+    .form-button {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(90deg, #00d4ff, #ff006e);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .form-button.orange {
+      background: linear-gradient(90deg, #ff006e, #ff9500);
+    }
+
+    .competition-item {
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .competition-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .competition-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+      margin-left: 0.5rem;
+    }
+
+    .competition-stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    /* Vote Page Styles */
+    .vote-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #000814 0%, #001d3d 50%, #000814 100%);
+      padding-bottom: 3rem;
+    }
+
+    .vote-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 8, 20, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+    }
+
+    .vote-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #00d4ff, #ff006e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .vote-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .vote-section-title {
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #00d4ff;
+    }
+
+    .vote-section-title.pink {
+      color: #ff006e;
+    }
+
+    .vote-section-desc {
+      color: #9ca3af;
+      margin-bottom: 2rem;
+    }
+
+    .rank-slot {
+      padding: 1rem;
+      background: rgba(0, 212, 255, 0.1);
+      border: 2px dashed rgba(0, 212, 255, 0.3);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .rank-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00d4ff, #0095ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #000814;
+      flex-shrink: 0;
+    }
+
+    .rank-info {
+      flex: 1;
+    }
+
+    .rank-label {
+      font-weight: 600;
+    }
+
+    .rank-points {
+      font-size: 0.75rem;
+      color: #00d4ff;
+    }
+
+    .contestant-card {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: grab;
+    }
+
+    .contestant-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #001d3d, #003566);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #00d4ff;
+    }
+
+    .contestant-name {
+      font-weight: 600;
+    }
+
+    .contestant-desc {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 2rem;
+      padding: 1.25rem 2rem;
+      background: linear-gradient(90deg, #ff006e, #00d4ff, #ff9500);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.125rem;
+      cursor: pointer;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, #001d3d 0%, #000814 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #00d4ff;
+    }
+
+    .modal-subtitle {
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .qr-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .share-option {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .share-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .share-label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .share-value {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .access-code {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ff006e;
+      letter-spacing: 0.2em;
+    }
+
+    .modal-close {
+      width: 100%;
+      padding: 0.875rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #9ca3af;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* SVG Icons */
+    .icon-svg {
+      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
+    }
+
+    ::selection {
+      background: #00d4ff;
+      color: #0a1a2e;
+    }
+  </style>
+</head>
+<body>
+  <!-- Demo Navigation -->
+  <div class="demo-nav">
+    <button class="active" onclick="showPage('landing')">Landing</button>
+    <button onclick="showPage('admin')">Admin</button>
+    <button onclick="showPage('vote')">Vote</button>
+    <button onclick="showModal()">Publish Modal</button>
+  </div>
+
+  <!-- Landing Page -->
+  <div id="landing-page" class="page active">
+    <section class="hero">
+      <div class="parallax-bg"></div>
+      <div class="bg-grid"></div>
+
+      <div class="hero-content">
+        <div class="eyebrow">RANKED VOTING REIMAGINED</div>
+        <h1 class="title">VOTR</h1>
+        <p class="subtitle">
+          The future of democratic decision-making. Drag, drop, and decide with precision.
+          Powered by Borda Count scoring for fair outcomes.
+        </p>
+        <div class="button-container">
+          <button class="primary-btn" onclick="showPage('vote')">Start Voting</button>
+          <button class="secondary-btn" onclick="showPage('admin')">Create Competition</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-eyebrow">HOW IT WORKS</div>
+      <h2 class="section-title">Three Simple Steps</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-number">01</div>
+          <h3 class="feature-title">Choose</h3>
+          <p class="feature-text">
+            Browse active competitions. From chili cook-offs to design contests,
+            find what matters to you and make your voice heard.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-number">02</div>
+          <h3 class="feature-title">Rank</h3>
+          <p class="feature-text">
+            Drag your top 5 choices into ranked slots. Our intuitive drag-and-drop
+            interface makes voting feel effortless and engaging.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-number">03</div>
+          <h3 class="feature-title">Decide</h3>
+          <p class="feature-text">
+            Watch live results unfold with animated leaderboards. Borda Count
+            scoring ensures the fairest possible outcomes every time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits-section">
+      <div class="section-eyebrow">WHY VOTR</div>
+      <h2 class="section-title">Powerful Features</h2>
+      <div class="benefits-list">
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <svg width="56" height="56" viewBox="0 0 64 64" fill="none" class="icon-svg">
+              <defs>
+                <linearGradient id="target-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f5ff"/>
+                  <stop offset="100%" stop-color="#ff006e"/>
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="26" stroke="url(#target-grad)" stroke-width="3" fill="none"/>
+              <circle cx="32" cy="32" r="18" stroke="url(#target-grad)" stroke-width="2.5" fill="none" opacity="0.8"/>
+              <circle cx="32" cy="32" r="10" stroke="url(#target-grad)" stroke-width="2" fill="none" opacity="0.6"/>
+              <circle cx="32" cy="32" r="4" fill="url(#target-grad)"/>
+              <line x1="32" y1="4" x2="32" y2="14" stroke="url(#target-grad)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="32" y1="50" x2="32" y2="60" stroke="url(#target-grad)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="4" y1="32" x2="14" y2="32" stroke="url(#target-grad)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="50" y1="32" x2="60" y2="32" stroke="url(#target-grad)" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="benefit-content">
+            <h3 class="benefit-title">Fair Borda Count Scoring</h3>
+            <p class="benefit-text">
+              Our Borda Count system (7-5-3-2-1 points) ensures every ranking matters.
+              Unlike simple voting, your full preference order influences the outcome fairly.
+            </p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <svg width="56" height="56" viewBox="0 0 64 64" fill="none" class="icon-svg">
+              <defs>
+                <linearGradient id="shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f5ff"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+                <linearGradient id="check-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00ff88"/>
+                  <stop offset="100%" stop-color="#00d4ff"/>
+                </linearGradient>
+              </defs>
+              <path d="M32 4L8 14V30C8 45 18 56 32 60C46 56 56 45 56 30V14L32 4Z" stroke="url(#shield-grad)" stroke-width="3" fill="rgba(0, 212, 255, 0.1)"/>
+              <path d="M22 32L28 38L42 24" stroke="url(#check-grad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="benefit-content">
+            <h3 class="benefit-title">Secure & Anonymous</h3>
+            <p class="benefit-text">
+              Vote with confidence. Each browser gets a unique ID to prevent duplicate votes,
+              while keeping your choices completely anonymous.
+            </p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <svg width="56" height="56" viewBox="0 0 64 64" fill="none" class="icon-svg">
+              <defs>
+                <linearGradient id="bolt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ffd700"/>
+                  <stop offset="50%" stop-color="#ff9500"/>
+                  <stop offset="100%" stop-color="#ff006e"/>
+                </linearGradient>
+              </defs>
+              <path d="M34 4L12 36H26L22 60L52 24H36L34 4Z" fill="url(#bolt-grad)"/>
+            </svg>
+          </div>
+          <div class="benefit-content">
+            <h3 class="benefit-title">Lightning Fast Interface</h3>
+            <p class="benefit-text">
+              Built with React, Vite, and GSAP animations for a buttery-smooth experience.
+              Drag-and-drop your rankings with zero lag.
+            </p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <svg width="56" height="56" viewBox="0 0 64 64" fill="none" class="icon-svg">
+              <defs>
+                <linearGradient id="chart-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#00d4ff"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+              <rect x="10" y="36" width="10" height="18" rx="2" fill="url(#chart-grad)" opacity="0.6"/>
+              <rect x="27" y="22" width="10" height="32" rx="2" fill="url(#chart-grad)" opacity="0.8"/>
+              <rect x="44" y="10" width="10" height="44" rx="2" fill="url(#chart-grad)"/>
+              <path d="M15 32L32 18L49 6" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <circle cx="15" cy="32" r="3" fill="#00d4ff"/>
+              <circle cx="32" cy="18" r="3" fill="#00d4ff"/>
+              <circle cx="49" cy="6" r="3" fill="#00d4ff"/>
+            </svg>
+          </div>
+          <div class="benefit-content">
+            <h3 class="benefit-title">Real-Time Results</h3>
+            <p class="benefit-text">
+              Watch the leaderboard update live as votes come in. Beautiful animated
+              charts show exactly how contestants rank at any moment.
+            </p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <svg width="56" height="56" viewBox="0 0 64 64" fill="none" class="icon-svg">
+              <defs>
+                <linearGradient id="sparkle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff006e"/>
+                  <stop offset="50%" stop-color="#8b5cf6"/>
+                  <stop offset="100%" stop-color="#00d4ff"/>
+                </linearGradient>
+              </defs>
+              <path d="M32 4L36 22L54 26L36 30L32 48L28 30L10 26L28 22L32 4Z" fill="url(#sparkle-grad)"/>
+              <path d="M50 12L52 18L58 20L52 22L50 28L48 22L42 20L48 18L50 12Z" fill="#ffd700"/>
+              <path d="M14 40L16 46L22 48L16 50L14 56L12 50L6 48L12 46L14 40Z" fill="#00f5ff"/>
+            </svg>
+          </div>
+          <div class="benefit-content">
+            <h3 class="benefit-title">Easy Competition Creation</h3>
+            <p class="benefit-text">
+              Admin panel makes it simple to create competitions and add contestants.
+              Perfect for events, contests, polls, and community decisions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="section-eyebrow">READY TO START?</div>
+      <h2 class="cta-title">Join the Revolution</h2>
+      <p class="cta-text">Make your vote count. Make it ranked.</p>
+      <button class="primary-btn" onclick="showPage('vote')">Get Started Now</button>
+    </section>
+
+    <footer class="footer">
+      <p>&copy; 2025 VOTR. Powered by democracy and precision.</p>
+    </footer>
+  </div>
+
+  <!-- Admin Page -->
+  <div id="admin-page" class="page">
+    <div class="admin-container">
+      <div class="admin-header">
+        <h1 class="admin-title">Admin Panel</h1>
+        <button class="secondary-btn" style="padding: 0.75rem 1.5rem; font-size: 0.875rem;">
+          Sign in with Google
+        </button>
+      </div>
+
+      <div class="admin-grid">
+        <div class="admin-card">
+          <h2 class="card-title">
+            <span>+</span> Create Competition
+          </h2>
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input type="text" class="form-input" placeholder="e.g., Ultimate Chili Cook-Off 2025">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" placeholder="Describe the competition..."></textarea>
+          </div>
+          <button class="form-button">
+            <span>+</span> Create Competition
+          </button>
+
+          <div style="margin-top: 1.5rem;">
+            <div class="form-label" style="margin-bottom: 1rem;">Your Competitions (3)</div>
+
+            <div class="competition-item">
+              <div class="competition-title">
+                Chili Cook-Off 2025
+                <span class="competition-badge">Published</span>
+              </div>
+              <div class="competition-stats">
+                <span>👥 8</span>
+                <span>🗳️ 42</span>
+                <span style="color: #00d4ff;">Code: 847291</span>
+              </div>
+            </div>
+
+            <div class="competition-item">
+              <div class="competition-title">
+                Best Logo Design
+                <span class="competition-badge" style="background: rgba(255,255,255,0.1); color: #9ca3af;">Draft</span>
+              </div>
+              <div class="competition-stats">
+                <span>👥 5</span>
+                <span>🗳️ 0</span>
+              </div>
+            </div>
+
+            <div class="competition-item">
+              <div class="competition-title">
+                Team Building Activity
+                <span class="competition-badge">Published</span>
+              </div>
+              <div class="competition-stats">
+                <span>👥 6</span>
+                <span>🗳️ 18</span>
+                <span style="color: #00d4ff;">Code: 392847</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h2 class="card-title pink">
+            <span>👥</span> Add Contestants
+          </h2>
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input type="text" class="form-input" placeholder="e.g., Spicy Steve's Chili">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" style="min-height: 3rem;" placeholder="Brief description..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image URL (optional)</label>
+            <input type="text" class="form-input" placeholder="https://...">
+          </div>
+          <button class="form-button orange">
+            <span>+</span> Add Contestant
+          </button>
+
+          <div style="margin-top: 1.5rem;">
+            <div class="form-label" style="margin-bottom: 1rem;">Contestants (8)</div>
+
+            <div class="contestant-card">
+              <div class="contestant-avatar">S</div>
+              <div>
+                <div class="contestant-name">Spicy Steve's Chili</div>
+                <div class="contestant-desc">Texas-style with ghost peppers</div>
+              </div>
+            </div>
+
+            <div class="contestant-card">
+              <div class="contestant-avatar">M</div>
+              <div>
+                <div class="contestant-name">Mom's Classic</div>
+                <div class="contestant-desc">Traditional family recipe</div>
+              </div>
+            </div>
+
+            <div class="contestant-card">
+              <div class="contestant-avatar">V</div>
+              <div>
+                <div class="contestant-name">Veggie Delight</div>
+                <div class="contestant-desc">Plant-based with black beans</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vote Page -->
+  <div id="vote-page" class="page">
+    <div class="vote-container">
+      <div class="vote-header">
+        <h1 class="vote-title">Chili Cook-Off 2025</h1>
+        <p style="color: #9ca3af; margin-top: 0.5rem;">Vote for your favorite chili recipes!</p>
+      </div>
+
+      <div class="vote-grid">
+        <div>
+          <h2 class="vote-section-title">Your Top 5</h2>
+          <p class="vote-section-desc">Drag contestants into ranked positions. 1st gets the most points!</p>
+
+          <div class="rank-slot">
+            <div class="rank-badge">1</div>
+            <div class="rank-info">
+              <div class="rank-label">1st Place</div>
+              <div class="rank-points">7 points</div>
+            </div>
+          </div>
+
+          <div class="rank-slot">
+            <div class="rank-badge" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">2</div>
+            <div class="rank-info">
+              <div class="rank-label">2nd Place</div>
+              <div class="rank-points">5 points</div>
+            </div>
+          </div>
+
+          <div class="rank-slot">
+            <div class="rank-badge" style="background: linear-gradient(135deg, #ff006e, #ff4d94);">3</div>
+            <div class="rank-info">
+              <div class="rank-label">3rd Place</div>
+              <div class="rank-points">3 points</div>
+            </div>
+          </div>
+
+          <div class="rank-slot">
+            <div class="rank-badge" style="background: rgba(255,255,255,0.2);">4</div>
+            <div class="rank-info">
+              <div class="rank-label">4th Place</div>
+              <div class="rank-points">2 points</div>
+            </div>
+          </div>
+
+          <div class="rank-slot">
+            <div class="rank-badge" style="background: rgba(255,255,255,0.1);">5</div>
+            <div class="rank-info">
+              <div class="rank-label">5th Place</div>
+              <div class="rank-points">1 point</div>
+            </div>
+          </div>
+
+          <button class="submit-btn">Submit Vote</button>
+        </div>
+
+        <div>
+          <h2 class="vote-section-title pink">Available Contestants</h2>
+          <p class="vote-section-desc">Choose your top 5 from the options below</p>
+
+          <div class="contestant-card">
+            <div style="color: #6b7280; margin-right: 0.5rem;">⋮⋮</div>
+            <div class="contestant-avatar">S</div>
+            <div>
+              <div class="contestant-name">Spicy Steve's Chili</div>
+              <div class="contestant-desc">Texas-style with ghost peppers</div>
+            </div>
+          </div>
+
+          <div class="contestant-card">
+            <div style="color: #6b7280; margin-right: 0.5rem;">⋮⋮</div>
+            <div class="contestant-avatar">M</div>
+            <div>
+              <div class="contestant-name">Mom's Classic</div>
+              <div class="contestant-desc">Traditional family recipe</div>
+            </div>
+          </div>
+
+          <div class="contestant-card">
+            <div style="color: #6b7280; margin-right: 0.5rem;">⋮⋮</div>
+            <div class="contestant-avatar">V</div>
+            <div>
+              <div class="contestant-name">Veggie Delight</div>
+              <div class="contestant-desc">Plant-based with black beans</div>
+            </div>
+          </div>
+
+          <div class="contestant-card">
+            <div style="color: #6b7280; margin-right: 0.5rem;">⋮⋮</div>
+            <div class="contestant-avatar">B</div>
+            <div>
+              <div class="contestant-name">BBQ Bacon Blast</div>
+              <div class="contestant-desc">Smoky with crispy bacon</div>
+            </div>
+          </div>
+
+          <div class="contestant-card">
+            <div style="color: #6b7280; margin-right: 0.5rem;">⋮⋮</div>
+            <div class="contestant-avatar">C</div>
+            <div>
+              <div class="contestant-name">Chocolate Thunder</div>
+              <div class="contestant-desc">Secret chocolate ingredient</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publish Modal -->
+  <div id="publish-modal" class="modal-overlay hidden" onclick="hideModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h3 class="modal-title">Competition Published!</h3>
+      <p class="modal-subtitle">Share this competition with voters using any of these methods:</p>
+
+      <div class="qr-wrapper">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <rect width="200" height="200" fill="white"/>
+          <g fill="black">
+            <rect x="20" y="20" width="60" height="60"/>
+            <rect x="30" y="30" width="40" height="40" fill="white"/>
+            <rect x="40" y="40" width="20" height="20"/>
+
+            <rect x="120" y="20" width="60" height="60"/>
+            <rect x="130" y="30" width="40" height="40" fill="white"/>
+            <rect x="140" y="40" width="20" height="20"/>
+
+            <rect x="20" y="120" width="60" height="60"/>
+            <rect x="30" y="130" width="40" height="40" fill="white"/>
+            <rect x="40" y="140" width="20" height="20"/>
+
+            <rect x="90" y="20" width="10" height="10"/>
+            <rect x="90" y="40" width="10" height="10"/>
+            <rect x="90" y="60" width="10" height="10"/>
+            <rect x="20" y="90" width="10" height="10"/>
+            <rect x="40" y="90" width="10" height="10"/>
+            <rect x="60" y="90" width="10" height="10"/>
+            <rect x="90" y="90" width="10" height="10"/>
+            <rect x="120" y="90" width="10" height="10"/>
+            <rect x="140" y="90" width="10" height="10"/>
+            <rect x="160" y="90" width="10" height="10"/>
+            <rect x="90" y="120" width="10" height="10"/>
+            <rect x="90" y="140" width="10" height="10"/>
+            <rect x="90" y="160" width="10" height="10"/>
+            <rect x="120" y="120" width="30" height="30"/>
+            <rect x="160" y="120" width="10" height="10"/>
+            <rect x="120" y="160" width="10" height="10"/>
+            <rect x="160" y="160" width="10" height="10"/>
+          </g>
+        </svg>
+      </div>
+
+      <button class="form-button" style="background: rgba(255,255,255,0.1); margin-bottom: 1.5rem;">
+        ⬇️ Download QR Code
+      </button>
+
+      <div style="margin-bottom: 1rem; font-size: 0.875rem; color: #9ca3af; font-weight: 600;">
+        SHARE OPTIONS
+      </div>
+
+      <div class="share-option">
+        <div class="share-icon">
+          <svg width="40" height="40" viewBox="0 0 64 64" fill="none">
+            <defs>
+              <linearGradient id="keypad-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff006e"/>
+                <stop offset="100%" stop-color="#ff9500"/>
+              </linearGradient>
+            </defs>
+            <g stroke="url(#keypad-grad)" stroke-width="2" fill="rgba(255, 0, 110, 0.1)">
+              <rect x="8" y="8" width="12" height="12" rx="3"/>
+              <rect x="26" y="8" width="12" height="12" rx="3"/>
+              <rect x="44" y="8" width="12" height="12" rx="3"/>
+              <rect x="8" y="26" width="12" height="12" rx="3"/>
+              <rect x="26" y="26" width="12" height="12" rx="3"/>
+              <rect x="44" y="26" width="12" height="12" rx="3"/>
+              <rect x="8" y="44" width="12" height="12" rx="3"/>
+              <rect x="26" y="44" width="12" height="12" rx="3"/>
+              <rect x="44" y="44" width="12" height="12" rx="3"/>
+            </g>
+          </svg>
+        </div>
+        <div style="flex: 1;">
+          <div class="share-label">6-Digit Access Code</div>
+          <div class="access-code">847291</div>
+        </div>
+        <button style="padding: 0.5rem; background: rgba(0, 212, 255, 0.2); border: none; border-radius: 6px; color: #00d4ff; cursor: pointer;">
+          📋
+        </button>
+      </div>
+
+      <div class="share-option">
+        <div class="share-icon" style="background: rgba(0, 212, 255, 0.2); border-radius: 8px;">
+          <span style="color: #00d4ff;">🔗</span>
+        </div>
+        <div style="flex: 1;">
+          <div class="share-label">Direct Link</div>
+          <div class="share-value">https://votr.app/vote/abc123</div>
+        </div>
+        <button style="padding: 0.5rem; background: rgba(0, 212, 255, 0.2); border: none; border-radius: 6px; color: #00d4ff; cursor: pointer;">
+          📋
+        </button>
+      </div>
+
+      <button class="modal-close" onclick="hideModal(event)">Close</button>
+    </div>
+  </div>
+
+  <script>
+    function showPage(page) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+      // Show selected page
+      document.getElementById(page + '-page').classList.add('active');
+
+      // Update nav buttons
+      document.querySelectorAll('.demo-nav button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function showModal() {
+      document.getElementById('publish-modal').classList.remove('hidden');
+    }
+
+    function hideModal(event) {
+      if (event.target.classList.contains('modal-overlay') || event.target.classList.contains('modal-close')) {
+        document.getElementById('publish-modal').classList.add('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
