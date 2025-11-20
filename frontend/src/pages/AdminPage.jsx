@@ -10,7 +10,6 @@ import {
   Trash2,
   Edit3,
   Share2,
-  QrCode,
   Copy,
   Link as LinkIcon,
   Check,
@@ -22,6 +21,7 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
+import { QRCodeIcon, KeypadIcon } from '../components/PremiumIcon';
 
 export default function AdminPage() {
   const { user, loading: authLoading, login, logout, isAuthenticated } = useAuth();
@@ -929,14 +929,19 @@ export default function AdminPage() {
               Download QR Code
             </button>
 
+            {/* Share Options Header */}
+            <div style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#9ca3af', fontWeight: '600' }}>
+              SHARE OPTIONS
+            </div>
+
             {/* Access Code */}
             <div style={styles.shareOption}>
-              <div style={{ ...styles.shareIcon, background: 'rgba(255, 0, 110, 0.2)' }}>
-                <QrCode size={20} color="#ff006e" />
+              <div style={{ ...styles.shareIcon, background: 'transparent' }}>
+                <KeypadIcon size={40} />
               </div>
               <div style={styles.shareInfo}>
-                <div style={styles.shareLabel}>Access Code</div>
-                <div style={{ ...styles.shareValue, fontSize: '1.25rem', fontWeight: 'bold', color: '#ff006e' }}>
+                <div style={styles.shareLabel}>6-Digit Access Code</div>
+                <div style={{ ...styles.shareValue, fontSize: '1.5rem', fontWeight: 'bold', color: '#ff006e', letterSpacing: '0.2em' }}>
                   {publishData.accessCode}
                 </div>
               </div>
@@ -945,6 +950,23 @@ export default function AdminPage() {
                 style={styles.copyBtn}
               >
                 {copiedField === 'code' ? <Check size={16} /> : <Copy size={16} />}
+              </button>
+            </div>
+
+            {/* QR Code Option */}
+            <div style={styles.shareOption}>
+              <div style={{ ...styles.shareIcon, background: 'transparent' }}>
+                <QRCodeIcon size={40} />
+              </div>
+              <div style={styles.shareInfo}>
+                <div style={styles.shareLabel}>QR Code</div>
+                <div style={styles.shareValue}>Scan to vote instantly</div>
+              </div>
+              <button
+                onClick={downloadQRCode}
+                style={styles.copyBtn}
+              >
+                <Download size={16} />
               </button>
             </div>
 

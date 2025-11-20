@@ -77,11 +77,12 @@ router.get(
 router.get(
   '/google/callback',
   passport.authenticate('google', {
-    failureRedirect: process.env.FRONTEND_URL + '/admin?error=auth_failed',
+    failureRedirect: process.env.FRONTEND_URL + '/?error=auth_failed',
   }),
   (req, res) => {
-    // Successful authentication
-    res.redirect(process.env.FRONTEND_URL + '/admin');
+    // Successful authentication - redirect to root, AuthContext will handle final destination
+    // based on stored return URL in sessionStorage
+    res.redirect(process.env.FRONTEND_URL + '/');
   }
 );
 

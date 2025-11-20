@@ -19,6 +19,18 @@ export function AuthProvider({ children }) {
         withCredentials: true,
       });
       setUser(data.user);
+
+      // Check for return URL after successful authentication
+      if (data.user) {
+        const returnUrl = sessionStorage.getItem('votr_return_url');
+        if (returnUrl) {
+          sessionStorage.removeItem('votr_return_url');
+          // Use window.location to navigate after OAuth callback
+          if (window.location.pathname !== returnUrl) {
+            window.location.href = returnUrl;
+          }
+        }
+      }
     } catch (error) {
       setUser(null);
     } finally {

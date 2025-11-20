@@ -12,10 +12,13 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { api, getVoterId } from '../api/client';
 import ContestantCard from '../components/ContestantCard';
 import RankedSlot from '../components/RankedSlot';
+import { useAuth } from '../context/AuthContext';
+import { GoogleIcon, UserIcon, AnonymousIcon } from '../components/PremiumIcon';
 
 export default function VotePage() {
   const { competitionId } = useParams();
   const navigate = useNavigate();
+  const { user, login, isAuthenticated } = useAuth();
 
   const [competition, setCompetition] = useState(null);
   const [availableContestants, setAvailableContestants] = useState([]);
@@ -31,6 +34,14 @@ export default function VotePage() {
   const [voterName, setVoterName] = useState('');
 
   const voterId = getVoterId();
+
+  // Set identity type to google if user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setIdentityType('google');
+      setVoterName(user.name || '');
+    }
+  }, [isAuthenticated, user]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -133,6 +144,14 @@ export default function VotePage() {
   const handleSubmitVote = async () => {
     if (!competitionId) return;
 
+    // If Google is selected but user isn't authenticated, trigger login
+    if (identityType === 'google' && !isAuthenticated) {
+      // Store the current URL to return after auth
+      sessionStorage.setItem('votr_return_url', window.location.pathname);
+      login();
+      return;
+    }
+
     setSubmitting(true);
     setShowIdentityModal(false);
 
@@ -143,8 +162,8 @@ export default function VotePage() {
         competitionId,
         rankings,
         isAnonymous: identityType === 'anonymous',
-        voterName: identityType === 'name' ? voterName : null,
-        voterEmail: null, // Would be set from Google OAuth
+        voterName: identityType === 'google' ? (user?.name || null) : (identityType === 'name' ? voterName : null),
+        voterEmail: identityType === 'google' ? (user?.email || null) : null,
       });
 
       setHasVoted(true);
@@ -380,13 +399,33 @@ export default function VotePage() {
       borderColor: '#00d4ff',
       background: 'rgba(0, 212, 255, 0.1)',
     },
+    optionRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem',
+    },
+    optionTextContent: {
+      flex: 1,
+    },
     optionTitle: {
       fontWeight: 'bold',
       marginBottom: '0.25rem',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      flexWrap: 'wrap',
     },
     optionDesc: {
       fontSize: '0.875rem',
       color: '#9ca3af',
+    },
+    signedInBadge: {
+      fontSize: '0.7rem',
+      padding: '0.2rem 0.5rem',
+      background: 'linear-gradient(90deg, #00d4ff, #8b5cf6)',
+      borderRadius: '9999px',
+      color: 'white',
+      fontWeight: 'normal',
     },
     input: {
       width: '100%',
@@ -575,8 +614,13 @@ export default function VotePage() {
               }}
               onClick={() => setIdentityType('anonymous')}
             >
-              <div style={styles.optionTitle}>Vote Anonymously</div>
-              <div style={styles.optionDesc}>Your vote will be recorded without any identifying information</div>
+              <div style={styles.optionRow}>
+                <AnonymousIcon size={32} />
+                <div style={styles.optionTextContent}>
+                  <div style={styles.optionTitle}>Vote Anonymously</div>
+                  <div style={styles.optionDesc}>Your vote will be recorded without any identifying information</div>
+                </div>
+              </div>
             </button>
 
             <button
@@ -586,8 +630,13 @@ export default function VotePage() {
               }}
               onClick={() => setIdentityType('name')}
             >
-              <div style={styles.optionTitle}>Provide Your Name</div>
-              <div style={styles.optionDesc}>Your name will be visible to the competition organizer</div>
+              <div style={styles.optionRow}>
+                <UserIcon size={32} />
+                <div style={styles.optionTextContent}>
+                  <div style={styles.optionTitle}>Provide Your Name</div>
+                  <div style={styles.optionDesc}>Your name will be visible to the competition organizer</div>
+                </div>
+              </div>
             </button>
 
             {identityType === 'name' && (
@@ -600,16 +649,44 @@ export default function VotePage() {
               />
             )}
 
+            <button
+              style={{
+                ...styles.optionBtn,
+                ...(identityType === 'google' ? styles.optionBtnActive : {}),
+              }}
+              onClick={() => setIdentityType('google')}
+            >
+              <div style={styles.optionRow}>
+                <GoogleIcon size={32} />
+                <div style={styles.optionTextContent}>
+                  <div style={styles.optionTitle}>
+                    Sign in with Google
+                    {isAuthenticated && user && (
+                      <span style={styles.signedInBadge}>Signed in as {user.name}</span>
+                    )}
+                  </div>
+                  <div style={styles.optionDesc}>
+                    {isAuthenticated
+                      ? 'Your vote will be recorded with your Google account details'
+                      : 'Sign in with your Google account to verify your identity'}
+                  </div>
+                </div>
+              </div>
+            </button>
+
             <div style={styles.modalBtnGroup}>
               <button style={styles.cancelBtn} onClick={() => setShowIdentityModal(false)}>
                 Cancel
               </button>
               <button
-                style={styles.confirmBtn}
+                style={{
+                  ...styles.confirmBtn,
+                  ...(identityType === 'name' && !voterName.trim() ? { opacity: 0.5, cursor: 'not-allowed' } : {}),
+                }}
                 onClick={handleSubmitVote}
                 disabled={identityType === 'name' && !voterName.trim()}
               >
-                Submit Vote
+                {identityType === 'google' && !isAuthenticated ? 'Sign in & Vote' : 'Submit Vote'}
               </button>
             </div>
           </div>
